@@ -1,6 +1,7 @@
 package com.awesomeproject
 
 import android.app.Application
+import com.awesomeproject.fileserver.FileServerPackage
 import com.facebook.react.PackageList
 import com.facebook.react.ReactApplication
 import com.facebook.react.ReactNativeHost
@@ -8,7 +9,6 @@ import com.facebook.react.ReactPackage
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.load
 import com.facebook.react.defaults.DefaultReactNativeHost
 import com.facebook.soloader.SoLoader
-import java.io.IOException
 
 class MainApplication : Application(), ReactApplication {
     private val mReactNativeHost: ReactNativeHost = object : DefaultReactNativeHost(this) {
@@ -17,10 +17,9 @@ class MainApplication : Application(), ReactApplication {
         }
 
         override fun getPackages(): List<ReactPackage> {
-            // Packages that cannot be auto linked yet can be added manually here, for
-            // example:
-            // packages.add(new MyReactNativePackage());
-            return PackageList(this).packages
+            val packages = PackageList(this).packages
+            packages.add(FileServerPackage())
+            return packages
         }
 
         override fun getJSMainModuleName(): String {
@@ -44,13 +43,6 @@ class MainApplication : Application(), ReactApplication {
             // If you opted-in for the New Architecture, we load the native entry point for
             // this app.
             load()
-        }
-        val server = FileServer(this, 7890)
-        try {
-            server.start()
-        } catch (e: IOException) {
-            e.printStackTrace()
-            // Handle server start failure
         }
         ReactNativeFlipper.initializeFlipper(this, reactNativeHost.reactInstanceManager)
     }
